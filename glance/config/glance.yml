@@ -1,0 +1,80 @@
+pages:
+  - name: Ffserver
+    hide-desktop-navigation: true
+    width: wide
+    columns:
+      - size: small
+        widgets:
+          - type: clock
+            hour-format: 12h
+            timezones:
+              - timezone: Africa/Nairobi
+                label: Addis Abeba
+              - timezone: Europe/London
+                label: London
+          - type: calendar
+            first-day-of-week: monday
+          - type: server-stats
+            servers:
+              - type: local
+                name: Services
+      - size: full
+        widgets:
+          - type: search
+            search-engine: google
+            bangs:
+              - title: YouTube
+                shortcut: "!yt"
+                url: https://www.youtube.com/results?search_query={QUERY}
+          - type: monitor
+            title: Services
+            sites:
+              - title: Navidrome
+                icon: di:navidrome
+                url: https://navidrome.ffserver.cc
+                check-url: http://navidrome:4533
+              - title: Jellyfin
+                icon: di:jellyfin
+                url: https://jellyfin.ffserver.cc
+                check-url: http://jellyfin:8096
+              - title: Excalidraw
+                icon: di:excalidraw
+                url: https://draw.ffserver.cc
+                check-url: http://excalidraw:80
+              - title: Memos
+                icon: di:memos
+                url: https://memos.ffserver.cc
+                check-url: http://memos:5230
+          - type: videos
+            channels:
+              - UCUyeluBRhGPCW4rPe_UvBZQ # ThePrimeTime
+              - UC8ENHE5xdFSwx71u3fDH5Xw # ThePrimeagen
+              - UCBJycsmduvYEL83R_U4JriQ # Marques Brownlee
+              - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+          - type: videos
+            channels:
+              - UCJD-UtyBgYWqvmp_lknn7Lg # Wechew Good
+              - UCzUjeR-Wgr0_iyL_brgx3Fw # Shitsxgigs Podcast
+              - UC6yW44UGJJBvYTlfC7CRg2Q # Man United
+      - size: small
+        widgets:
+          - type: weather
+            location: London, United Kingdom
+            units: metric
+            hour-format: 12h
+          - type: weather
+            location: Addis Ababa, Ethiopia
+            units: metric
+            hour-format: 12h
+          - type: markets
+            markets:
+              - symbol: SPY
+                name: S&P 500
+              - symbol: BTC-USD
+                name: Bitcoin
+              - symbol: NVDA
+                name: NVIDIA
+              - symbol: AAPL
+                name: Apple
+              - symbol: MSFT
+                name: Microsoft

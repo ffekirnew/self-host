@@ -1,0 +1,25 @@
+services:
+  nextcloud-aio-mastercontainer:
+    build:
+      context: ./nextcloud
+    container_name: nextcloud-aio-mastercontainer
+    init: true
+    # sig-proxy=false has no direct compose v2 equivalent; keep using `docker run` flags
+    # if you truly need it, or omit if not required in your setup.
+    restart: always
+    ports:
+      - 80:80
+      - 8080:8080
+      - 9002:8443
+    volumes:
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/home-server/nextcloud/nextcloud_aio_mastercontainer

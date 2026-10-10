@@ -1,0 +1,128 @@
+services:
+  monica:
+    build:
+      context: ./monica
+    container_name: monica
+    networks:
+      - default
+    restart: unless-stopped
+    ports:
+      - 8081:80
+    environment:
+      - MAIL_MAILER=log
+  qbittorrent:
+    build:
+      context: ./qbittorrent
+    container_name: qbittorrent
+    networks:
+      - default
+    environment:
+      - TZ=Etc/London
+      - WEBUI_PORT=9090
+      - TORRENTING_PORT=6881
+    volumes:
+      - ~/home-server/.config/qbittorrent:/config
+      - ~/home-server/qbittorrent/downloads:/downloads
+    ports:
+      - 9090:9090 # Web UI
+      - 6881:6881 # Torrent port (TCP)
+      - 6881:6881/udp
+    restart: unless-stopped
+  jackett:
+    build:
+      context: ./jackett
+    container_name: jackett
+    networks:
+      - default
+    environment:
+      - TZ=Europe/London
+    volumes:
+      - ~/home-server/.config/jackett:/config
+      - ~/home-server/jackett/downloads:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+  glance:
+    build:
+      context: ./glance
+    container_name: glance
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - 8080:8080
+    volumes:
+      - ./glance/config:/app/config
+  navidrome:
+    build:
+      context: ./navidrome
+    container_name: navidrome
+    networks:
+      - default
+    init: true
+    ports:
+      - 4533:4533
+    restart: unless-stopped
+    volumes:
+      - ~/home-server/navidrome/data:/data
+      - type: bind
+        source: ~/home-server/media/music
+        target: /music
+        read_only: true
+  jellyfin:
+    build:
+      context: ./jellyfin
+    container_name: jellyfin
+    networks:
+      - default
+    init: true
+    ports:
+      - 8096:8096/tcp
+      - 7359:7359/udp
+    volumes:
+      - ~/home-server/jellyfin/srv/jellyfin/config:/config
+      - ~/home-server/jellyfin/srv/jellyfin/cache:/cache
+      - type: bind
+        source: ~/home-server/media
+        target: /media
+        read_only: true
+    restart: "unless-stopped"
+  excalidraw:
+    build:
+      context: ./excalidraw
+    container_name: excalidraw
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - 80:80
+  memos:
+    build:
+      context: ./memos
+    container_name: memos
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - 5230:5230
+    volumes:
+      - ~/home-server/.config/memos:/var/opt/memos
+  cloudflared:
+    build:
+      context: ./cloudflared
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - default
+    depends_on:
+      - navidrome
+      - jellyfin
+      - glance
+      - excalidraw
+      - memos
+      - monica
+networks:
+  default:
+    external: true
+    name: proxy

@@ -1,0 +1,1 @@
+FROM neosmemo/memos:stable
