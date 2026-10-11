@@ -37,6 +37,21 @@ pages:
                 <li>{{ .JSON.String "city" }}, {{ .JSON.String "country" }}</li>
               </ul>
               {{ end }}
+          - type: custom-api
+            title: GPU
+            cache: 10s
+            url: http://gpu-stats:8080
+            template: |
+              <div class="flex justify-between items-center">
+                <div class="size-h3 {{ if gt (.JSON.Float "video") 0.0 }}color-positive{{ end }}">{{ if gt (.JSON.Float "video") 0.0 }}Transcoding{{ else }}Idle{{ end }}</div>
+                <div class="size-h5">{{ .JSON.Int "frequency_mhz" }} MHz</div>
+              </div>
+              <ul class="list list-gap-10 margin-top-10">
+                <li>Video (decode/encode) <span class="color-highlight">{{ .JSON.Float "video" }}%</span></li>
+                <li>Render/compute <span class="color-highlight">{{ .JSON.Float "render" }}%</span></li>
+                <li>Video enhance <span class="color-highlight">{{ .JSON.Float "video_enhance" }}%</span></li>
+                <li>Power <span class="color-highlight">{{ .JSON.Float "power_w" }} W</span></li>
+              </ul>
       - size: full
         widgets:
           - type: search

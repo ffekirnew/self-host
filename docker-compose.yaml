@@ -185,6 +185,18 @@ services:
         target: /media
         read_only: true
     restart: "unless-stopped"
+  gpu-stats:
+    build:
+      context: ./gpu-stats
+    container_name: gpu-stats
+    networks:
+      - default
+    # intel_gpu_top reads the i915 PMU; PERFMON is enough, no need for privileged
+    cap_add:
+      - PERFMON
+    devices:
+      - /dev/dri:/dev/dri
+    restart: unless-stopped
   excalidraw:
     build:
       context: ./excalidraw
