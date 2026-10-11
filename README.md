@@ -12,9 +12,7 @@ Home server stack run with Docker Compose, exposed through a Cloudflare tunnel.
 ## Usage
 
 ```sh
-./setup.sh                                # create host directories
-for s in */setup.sh; do bash "$s"; done   # per-service directories
-make up                                   # checks prerequisites, then starts everything
+make up   # runs ./bootstrap.sh, then starts everything
 ```
 
-`make check` checks that the prerequisites above are in place and creates the `proxy` Docker network if it doesn't exist yet. `make up` runs it automatically.
+`./bootstrap.sh` checks the prerequisites above, creates the `proxy` Docker network if it doesn't exist yet, and runs each service's `<service>/bootstrap.sh`, which creates that service's host directories and checks its config. It's safe to re-run.

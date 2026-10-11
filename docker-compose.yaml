@@ -1,15 +1,4 @@
 services:
-  monica:
-    build:
-      context: ./monica
-    container_name: monica
-    networks:
-      - default
-    restart: unless-stopped
-    ports:
-      - 8081:80
-    environment:
-      - MAIL_MAILER=log
   qbittorrent:
     build:
       context: ./qbittorrent
@@ -96,17 +85,6 @@ services:
       - default
     ports:
       - 80:80
-  memos:
-    build:
-      context: ./memos
-    container_name: memos
-    restart: unless-stopped
-    networks:
-      - default
-    ports:
-      - 5230:5230
-    volumes:
-      - ~/home-server/.config/memos:/var/opt/memos
   cloudflared:
     build:
       context: ./cloudflared
@@ -120,8 +98,6 @@ services:
       - jellyfin
       - glance
       - excalidraw
-      - memos
-      - monica
 networks:
   default:
     external: true

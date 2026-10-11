@@ -1,13 +1,9 @@
-.PHONY: up down build logs clean check
+.PHONY: up down build logs clean bootstrap
 
-check:
-	@command -v docker >/dev/null || { echo "missing: docker"; exit 1; }
-	@docker compose version >/dev/null 2>&1 || { echo "missing: docker compose v2 plugin"; exit 1; }
-	@test -f .env || { echo "missing: .env (needs CLOUDFLARE_TUNNEL_TOKEN)"; exit 1; }
-	@grep -q '^CLOUDFLARE_TUNNEL_TOKEN=.' .env || { echo "missing: CLOUDFLARE_TUNNEL_TOKEN in .env"; exit 1; }
-	@docker network inspect proxy >/dev/null 2>&1 || { echo "creating docker network: proxy"; docker network create proxy >/dev/null; }
+bootstrap:
+	@./bootstrap.sh
 
-up: check
+up: bootstrap
 	docker compose up -d
 
 down:

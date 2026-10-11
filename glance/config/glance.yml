@@ -41,10 +41,6 @@ pages:
                 icon: di:excalidraw
                 url: https://draw.ffserver.cc
                 check-url: http://excalidraw:80
-              - title: Memos
-                icon: di:memos
-                url: https://memos.ffserver.cc
-                check-url: http://memos:5230
           - type: videos
             channels:
               - UCUyeluBRhGPCW4rPe_UvBZQ # ThePrimeTime
