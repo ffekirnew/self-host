@@ -204,6 +204,45 @@ services:
     restart: unless-stopped
     networks:
       - default
+  tandoor-db:
+    build:
+      context: ./tandoor-db
+    container_name: tandoor-db
+    networks:
+      - default
+    environment:
+      - POSTGRES_DB=tandoor
+      - POSTGRES_USER=tandoor
+      - POSTGRES_PASSWORD=${TANDOOR_DB_PASSWORD}
+    volumes:
+      - ~/home-server/tandoor/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+  tandoor:
+    build:
+      context: ./tandoor
+    container_name: tandoor
+    networks:
+      - default
+    depends_on:
+      - tandoor-db
+    environment:
+      - TZ=Europe/London
+      - SECRET_KEY=${TANDOOR_SECRET_KEY}
+      - DB_ENGINE=django.db.backends.postgresql
+      - POSTGRES_HOST=tandoor-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=tandoor
+      - POSTGRES_USER=tandoor
+      - POSTGRES_PASSWORD=${TANDOOR_DB_PASSWORD}
+      # "tandoor" so glance's health check (http://tandoor:80) is accepted
+      - ALLOWED_HOSTS=recipes.ffserver.cc,tandoor
+      - CSRF_TRUSTED_ORIGINS=https://recipes.ffserver.cc
+      - ENABLE_SIGNUP=0
+      - GUNICORN_WORKERS=2
+    volumes:
+      - tandoor-static:/opt/recipes/staticfiles
+      - ~/home-server/tandoor/mediafiles:/opt/recipes/mediafiles
+    restart: unless-stopped
   cloudflared:
     build:
       context: ./cloudflared
@@ -218,6 +257,9 @@ services:
       - glance
       - excalidraw
       - seerr
+      - tandoor
+volumes:
+  tandoor-static:
 networks:
   default:
     external: true
