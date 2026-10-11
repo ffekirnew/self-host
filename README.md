@@ -25,6 +25,30 @@ make up   # runs ./bootstrap.sh, then starts everything
 
 ## Access
 
-Public services go through the Cloudflare tunnel only and publish no host ports. qbittorrent (`:9090`) and jackett (`:9117`) are bound to `127.0.0.1`. From another machine, use `ssh -L 9090:localhost:9090 -L 9117:localhost:9117 <server>`.
+Public services go through the Cloudflare tunnel only and publish no host ports. Admin UIs are bound to `127.0.0.1`:
+
+| Service | Port | Role |
+| --- | --- | --- |
+| Seerr | 5055 | request movies/TV; public at `seerr.ffserver.cc` |
+| Sonarr | 8989 | TV |
+| Radarr | 7878 | movies |
+| Lidarr | 8686 | music |
+| Bazarr | 6767 | subtitles |
+| Prowlarr | 9696 | indexers (synced to Sonarr/Radarr/Lidarr) |
+| qBittorrent | 9090 | downloads |
+
+From another machine: `ssh -L 8989:localhost:8989 <server>` (one `-L` per port).
 
 qbittorrent shares gluetun's network namespace, so all of its traffic goes through NordVPN. If the VPN drops, it has no network.
+
+## Media layout
+
+Everything lives under one folder so finished downloads can be hardlinked into the library (instant, no extra disk):
+
+```
+~/home-server/data/
+├── torrents/{tv,movies,music}   # qbittorrent categories
+└── media/{tv,movies,music}      # library: Jellyfin, Navidrome
+```
+
+Containers that need both mount it as `/data`.

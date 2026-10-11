@@ -34,25 +34,115 @@ services:
       - gluetun
     environment:
       - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
       - WEBUI_PORT=9090
       - TORRENTING_PORT=6881
     volumes:
       - ~/home-server/.config/qbittorrent:/config
-      - ~/home-server/qbittorrent/downloads:/downloads
+      - ~/home-server/data:/data
     restart: unless-stopped
-  jackett:
+  prowlarr:
     build:
-      context: ./jackett
-    container_name: jackett
+      context: ./prowlarr
+    container_name: prowlarr
     networks:
       - default
     environment:
       - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
     volumes:
-      - ~/home-server/.config/jackett:/config
-      - ~/home-server/jackett/downloads:/downloads
+      - ~/home-server/.config/prowlarr:/config
     ports:
-      - 127.0.0.1:9117:9117
+      - 127.0.0.1:9696:9696
+    restart: unless-stopped
+  flaresolverr:
+    build:
+      context: ./flaresolverr
+    container_name: flaresolverr
+    networks:
+      - default
+    environment:
+      - TZ=Europe/London
+    restart: unless-stopped
+  sonarr:
+    build:
+      context: ./sonarr
+    container_name: sonarr
+    networks:
+      - default
+    environment:
+      - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ~/home-server/.config/sonarr:/config
+      - ~/home-server/data:/data
+    ports:
+      - 127.0.0.1:8989:8989
+    restart: unless-stopped
+  radarr:
+    build:
+      context: ./radarr
+    container_name: radarr
+    networks:
+      - default
+    environment:
+      - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ~/home-server/.config/radarr:/config
+      - ~/home-server/data:/data
+    ports:
+      - 127.0.0.1:7878:7878
+    restart: unless-stopped
+  lidarr:
+    build:
+      context: ./lidarr
+    container_name: lidarr
+    networks:
+      - default
+    environment:
+      - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ~/home-server/.config/lidarr:/config
+      - ~/home-server/data:/data
+    ports:
+      - 127.0.0.1:8686:8686
+    restart: unless-stopped
+  bazarr:
+    build:
+      context: ./bazarr
+    container_name: bazarr
+    networks:
+      - default
+    environment:
+      - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ~/home-server/.config/bazarr:/config
+      - ~/home-server/data:/data
+    ports:
+      - 127.0.0.1:6767:6767
+    restart: unless-stopped
+  seerr:
+    build:
+      context: ./seerr
+    container_name: seerr
+    networks:
+      - default
+    init: true
+    environment:
+      - TZ=Europe/London
+    volumes:
+      - ~/home-server/.config/seerr:/app/config
+    ports:
+      - 127.0.0.1:5055:5055 # for first-time setup; public access goes through the tunnel
     restart: unless-stopped
   glance:
     build:
@@ -74,7 +164,7 @@ services:
     volumes:
       - ~/home-server/navidrome/data:/data
       - type: bind
-        source: ~/home-server/media/music
+        source: ~/home-server/data/media/music
         target: /music
         read_only: true
   jellyfin:
@@ -88,7 +178,7 @@ services:
       - ~/home-server/jellyfin/srv/jellyfin/config:/config
       - ~/home-server/jellyfin/srv/jellyfin/cache:/cache
       - type: bind
-        source: ~/home-server/media
+        source: ~/home-server/data/media
         target: /media
         read_only: true
     restart: "unless-stopped"
@@ -112,6 +202,7 @@ services:
       - jellyfin
       - glance
       - excalidraw
+      - seerr
 networks:
   default:
     external: true

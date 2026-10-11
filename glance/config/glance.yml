@@ -60,6 +60,38 @@ pages:
                 icon: di:excalidraw
                 url: https://draw.ffserver.cc
                 check-url: http://excalidraw:80
+              - title: Seerr
+                icon: di:jellyseerr
+                url: https://seerr.ffserver.cc
+                check-url: http://seerr:5055/api/v1/status
+          - type: monitor
+            title: Media pipeline
+            # local-only UIs: the links work on the server itself (or over `ssh -L`)
+            sites:
+              - title: Sonarr
+                icon: di:sonarr
+                url: http://localhost:8989
+                check-url: http://sonarr:8989/ping
+              - title: Radarr
+                icon: di:radarr
+                url: http://localhost:7878
+                check-url: http://radarr:7878/ping
+              - title: Lidarr
+                icon: di:lidarr
+                url: http://localhost:8686
+                check-url: http://lidarr:8686/ping
+              - title: Bazarr
+                icon: di:bazarr
+                url: http://localhost:6767
+                check-url: http://bazarr:6767
+              - title: Prowlarr
+                icon: di:prowlarr
+                url: http://localhost:9696
+                check-url: http://prowlarr:9696/ping
+              - title: qBittorrent
+                icon: di:qbittorrent
+                url: http://localhost:9090
+                check-url: http://gluetun:9090
           - type: videos
             channels:
               - UCUyeluBRhGPCW4rPe_UvBZQ # ThePrimeTime

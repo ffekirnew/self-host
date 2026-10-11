@@ -23,6 +23,9 @@ Home server stack run with Docker Compose. Each service has its own folder with 
 
 - Services reach each other by container name on the `proxy` network. cloudflared routes public traffic by name, so services don't need host `ports:`. Don't add them unless something on the host needs one, and bind it to `127.0.0.1`.
 - `qbittorrent` uses `network_mode: service:gluetun` (NordVPN kill switch). Its ports are published on the `gluetun` service, and other containers reach it at `gluetun:9090`.
+- Media pipeline: Seerr → Sonarr/Radarr/Lidarr → qbittorrent (`gluetun:9090`) → `data/torrents/<category>` → hardlinked into `data/media` → Jellyfin/Navidrome. Prowlarr pushes indexers to the arrs; indexers behind Cloudflare need the `flaresolverr` tag.
+- Anything that touches downloads *and* the library mounts `~/home-server/data:/data` (one mount, so hardlinks work). Don't split it into separate downloads/media mounts.
+- linuxserver images run with `PUID=1000`/`PGID=1000` so files on the host are owned by the user.
 - If gluetun can't connect (TLS handshake timeouts, connection resets), suspect a stale server list before blaming the network. Delete `~/home-server/gluetun/servers.json` and re-run `make up` to fetch a fresh one.
 
 ## Commands

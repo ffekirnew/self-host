@@ -2,4 +2,4 @@
 set -euo pipefail
 
 mkdir -p ~/home-server/navidrome/data
-mkdir -p ~/home-server/media/music
+mkdir -p ~/home-server/data/media/music

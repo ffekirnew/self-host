@@ -2,4 +2,5 @@
 set -euo pipefail
 
 mkdir -p ~/home-server/.config/qbittorrent
-mkdir -p ~/home-server/qbittorrent/downloads
+# downloads land in data/torrents/<category>; same filesystem as data/media so the *arrs can hardlink
+mkdir -p ~/home-server/data/torrents/{tv,movies,music}
