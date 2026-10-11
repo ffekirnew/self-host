@@ -1,0 +1,6 @@
+# gluetun control server auth: https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/control-server.md
+# read-only routes the glance VPN widget uses; everything else stays locked
+[[roles]]
+name = "glance"
+routes = ["GET /v1/vpn/status", "GET /v1/publicip/ip"]
+auth = "none"

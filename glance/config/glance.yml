@@ -18,6 +18,25 @@ pages:
             servers:
               - type: local
                 name: Services
+          - type: custom-api
+            title: VPN
+            cache: 1m
+            url: http://gluetun:8000/v1/publicip/ip
+            subrequests:
+              status:
+                url: http://gluetun:8000/v1/vpn/status
+            template: |
+              {{ $up := eq ((.Subrequest "status").JSON.String "status") "running" }}
+              <div class="flex justify-between items-center">
+                <div class="size-h3 {{ if $up }}color-positive{{ else }}color-negative{{ end }}">{{ if $up }}Connected{{ else }}Down{{ end }}</div>
+                <div class="size-h5">NordVPN</div>
+              </div>
+              {{ if $up }}
+              <ul class="list list-gap-10 margin-top-10">
+                <li>IP <span class="color-highlight">{{ .JSON.String "public_ip" }}</span></li>
+                <li>{{ .JSON.String "city" }}, {{ .JSON.String "country" }}</li>
+              </ul>
+              {{ end }}
       - size: full
         widgets:
           - type: search

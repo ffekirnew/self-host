@@ -1,21 +1,44 @@
 services:
+  gluetun:
+    build:
+      context: ./gluetun
+    container_name: gluetun
+    networks:
+      - default
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - TZ=Europe/London
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${NORDVPN_USER}
+      - OPENVPN_PASSWORD=${NORDVPN_PASSWORD}
+      - SERVER_COUNTRIES=United Kingdom
+      # the server list baked into the image goes stale (Nord rotates IPs); refresh it daily
+      - UPDATER_PERIOD=24h
+    volumes:
+      - ~/home-server/gluetun:/gluetun
+      - ./gluetun/auth/config.toml:/gluetun/auth/config.toml:ro
+    ports:
+      - 127.0.0.1:9090:9090 # qbittorrent Web UI
+    restart: unless-stopped
   qbittorrent:
     build:
       context: ./qbittorrent
     container_name: qbittorrent
-    networks:
-      - default
+    # all traffic goes through the VPN; if gluetun is down, qbittorrent has no network
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
     environment:
-      - TZ=Etc/London
+      - TZ=Europe/London
       - WEBUI_PORT=9090
       - TORRENTING_PORT=6881
     volumes:
       - ~/home-server/.config/qbittorrent:/config
       - ~/home-server/qbittorrent/downloads:/downloads
-    ports:
-      - 9090:9090 # Web UI
-      - 6881:6881 # Torrent port (TCP)
-      - 6881:6881/udp
     restart: unless-stopped
   jackett:
     build:
@@ -29,7 +52,7 @@ services:
       - ~/home-server/.config/jackett:/config
       - ~/home-server/jackett/downloads:/downloads
     ports:
-      - 9117:9117
+      - 127.0.0.1:9117:9117
     restart: unless-stopped
   glance:
     build:
@@ -38,8 +61,6 @@ services:
     restart: unless-stopped
     networks:
       - default
-    ports:
-      - 8080:8080
     volumes:
       - ./glance/config:/app/config
   navidrome:
@@ -49,8 +70,6 @@ services:
     networks:
       - default
     init: true
-    ports:
-      - 4533:4533
     restart: unless-stopped
     volumes:
       - ~/home-server/navidrome/data:/data
@@ -65,9 +84,6 @@ services:
     networks:
       - default
     init: true
-    ports:
-      - 8096:8096/tcp
-      - 7359:7359/udp
     volumes:
       - ~/home-server/jellyfin/srv/jellyfin/config:/config
       - ~/home-server/jellyfin/srv/jellyfin/cache:/cache
@@ -83,8 +99,6 @@ services:
     restart: unless-stopped
     networks:
       - default
-    ports:
-      - 80:80
   cloudflared:
     build:
       context: ./cloudflared
