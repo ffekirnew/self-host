@@ -83,6 +83,10 @@ pages:
                 icon: di:tandoor-recipes
                 url: https://recipes.ffserver.cc
                 check-url: http://tandoor:80
+              - title: AdventureLog
+                icon: di:adventurelog
+                url: https://adventures.ffserver.cc
+                check-url: http://adventurelog:80/health
           - type: monitor
             title: Media pipeline
             # local-only UIs: the links work on the server itself (or over `ssh -L`)
