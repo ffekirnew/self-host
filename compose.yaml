@@ -21,6 +21,7 @@ services:
       - seerr
       - tandoor
       - adventurelog
+      - ghost
 networks:
   default:
     external: true

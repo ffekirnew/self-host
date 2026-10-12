@@ -84,6 +84,41 @@ services:
     volumes:
       - ~/home-server/adventurelog/media:/code/media
     restart: unless-stopped
+  ghost-db:
+    build:
+      context: ./ghost-db
+    container_name: ghost-db
+    networks:
+      - default
+    environment:
+      - MYSQL_DATABASE=ghost
+      - MYSQL_USER=ghost
+      - MYSQL_PASSWORD=${GHOST_DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${GHOST_DB_ROOT_PASSWORD}
+    volumes:
+      - ~/home-server/ghost/mysql:/var/lib/mysql
+    restart: unless-stopped
+  ghost:
+    build:
+      context: ./ghost
+    container_name: ghost
+    networks:
+      - default
+    depends_on:
+      - ghost-db
+    environment:
+      # public URL: links, redirects and the admin all depend on it
+      - url=https://blog.ffserver.cc
+      - database__client=mysql
+      - database__connection__host=ghost-db
+      - database__connection__user=ghost
+      - database__connection__password=${GHOST_DB_PASSWORD}
+      - database__connection__database=ghost
+      # new-device logins email a code; no SMTP is configured, so this would lock out the admin
+      - security__staffDeviceVerification=false
+    volumes:
+      - ~/home-server/ghost/content:/var/lib/ghost/content
+    restart: unless-stopped
 volumes:
   tandoor-static:
 networks:
