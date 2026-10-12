@@ -17,4 +17,4 @@ logs:
 
 clean:
 	docker compose down --volumes --remove-orphans
-	rm -rf jellyfin/data
+	rm -rf media/jellyfin/data

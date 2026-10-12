@@ -10,10 +10,11 @@ done
 docker compose version >/dev/null 2>&1 || { echo "missing: docker compose v2 plugin"; missing=1; }
 [ "$missing" -eq 0 ] || exit 1
 
-# docker-compose.yaml attaches every service to this external network
+# the compose files attach every service to this external network
 docker network inspect proxy >/dev/null 2>&1 || { echo "creating docker network: proxy"; docker network create proxy >/dev/null; }
 
-for script in */bootstrap.sh; do
+# cloudflared/bootstrap.sh at the root, everything else under <group>/<service>/
+for script in */bootstrap.sh */*/bootstrap.sh; do
   echo "bootstrapping $(dirname "$script")"
   bash "$script"
 done

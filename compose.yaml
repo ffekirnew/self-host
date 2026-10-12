@@ -1,0 +1,26 @@
+include:
+  - path: downloads/compose.yaml
+  - path: arr/compose.yaml
+  - path: media/compose.yaml
+  - path: apps/compose.yaml
+  - path: monitoring/compose.yaml
+services:
+  cloudflared:
+    build:
+      context: ./cloudflared
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - default
+    depends_on:
+      - navidrome
+      - jellyfin
+      - glance
+      - excalidraw
+      - seerr
+      - tandoor
+networks:
+  default:
+    external: true
+    name: proxy
