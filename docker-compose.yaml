@@ -243,6 +243,46 @@ services:
       - tandoor-static:/opt/recipes/staticfiles
       - ~/home-server/tandoor/mediafiles:/opt/recipes/mediafiles
     restart: unless-stopped
+  ollama:
+    build:
+      context: ./ollama
+    container_name: ollama
+    networks:
+      - default
+    environment:
+      - TZ=Europe/London
+      # one small model at a time, unloaded after 10 idle minutes, so it doesn't crowd out the rest
+      - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_NUM_PARALLEL=1
+      - OLLAMA_KEEP_ALIVE=10m
+      # run models on the Intel iGPU via Vulkan: ~4x faster than CPU on the N150 (qwen3:4b 1.0 -> 4.2 tok/s)
+      - OLLAMA_VULKAN=1
+      - OLLAMA_IGPU_ENABLE=1
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - ~/home-server/ollama:/root/.ollama
+    mem_limit: 8g
+    restart: unless-stopped
+  open-webui:
+    build:
+      context: ./open-webui
+    container_name: open-webui
+    networks:
+      - default
+    depends_on:
+      - ollama
+    environment:
+      - TZ=Europe/London
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - WEBUI_URL=https://chat.ffserver.cc
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+      # public URL: nobody can sign up except the very first (admin) account
+      - ENABLE_SIGNUP=false
+      - ENABLE_INITIAL_ADMIN_SIGNUP=true
+    volumes:
+      - ~/home-server/.config/open-webui:/app/backend/data
+    restart: unless-stopped
   cloudflared:
     build:
       context: ./cloudflared
@@ -258,6 +298,7 @@ services:
       - excalidraw
       - seerr
       - tandoor
+      - open-webui
 volumes:
   tandoor-static:
 networks:

@@ -12,6 +12,8 @@ Sizes as of 2026-10-11.
 | `jellyfin/srv/jellyfin/config` | ~200 MB without `metadata/` | Yes. Exclude `metadata/` (882 MB) and `jellyfin/srv/jellyfin/cache`; Jellyfin re-downloads both. |
 | `navidrome/data` | 140 MB | Yes. Play counts, playlists and users. |
 | `tandoor/postgres` + `tandoor/mediafiles` | small | Yes. Back up the database with `pg_dump` (`docker exec tandoor-db pg_dump -U tandoor tandoor`), not a raw copy of the data dir; mediafiles holds recipe photos. |
+| `.config/open-webui` | small | Yes. Users and chat history. |
+| `ollama/` | ~4 GB | No. Models can be re-pulled. |
 | `.env` (repo root) | tiny | Yes. The restic repo is encrypted. |
 | This repo | none | No, it's on GitHub. |
 | `gluetun/`, `data/torrents` | none | No, both are disposable. |
