@@ -83,6 +83,10 @@ pages:
                 icon: di:tandoor-recipes
                 url: https://recipes.ffserver.cc
                 check-url: http://tandoor:80
+              - title: Open WebUI
+                icon: di:open-webui
+                url: https://chat.ffserver.cc
+                check-url: http://open-webui:8080/health
           - type: monitor
             title: Media pipeline
             # local-only UIs: the links work on the server itself (or over `ssh -L`)
@@ -111,6 +115,10 @@ pages:
                 icon: di:qbittorrent
                 url: http://localhost:9090
                 check-url: http://gluetun:9090
+              - title: Ollama
+                icon: di:ollama
+                url: https://chat.ffserver.cc
+                check-url: http://ollama:11434
           - type: videos
             channels:
               - UCUyeluBRhGPCW4rPe_UvBZQ # ThePrimeTime
