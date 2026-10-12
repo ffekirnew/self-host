@@ -1,0 +1,37 @@
+services:
+  jellyfin:
+    build:
+      context: ./jellyfin
+    container_name: jellyfin
+    networks:
+      - default
+    init: true
+    # Intel Quick Sync (N150 iGPU) for hardware transcoding; the container runs as root, so no group_add needed
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - ~/home-server/jellyfin/srv/jellyfin/config:/config
+      - ~/home-server/jellyfin/srv/jellyfin/cache:/cache
+      - type: bind
+        source: ~/home-server/data/media
+        target: /media
+        read_only: true
+    restart: "unless-stopped"
+  navidrome:
+    build:
+      context: ./navidrome
+    container_name: navidrome
+    networks:
+      - default
+    init: true
+    restart: unless-stopped
+    volumes:
+      - ~/home-server/navidrome/data:/data
+      - type: bind
+        source: ~/home-server/data/media/music
+        target: /music
+        read_only: true
+networks:
+  default:
+    external: true
+    name: proxy

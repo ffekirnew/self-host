@@ -30,10 +30,10 @@ For notifications from the server (Seerr, diun, backups), use a Telegram **bot**
 ## Plan
 
 **In the repo**
-- A `telegram-mcp/` folder with:
+- An `apps/telegram-mcp/` folder with:
   - a `Dockerfile` that builds from the GitHub repo at a pinned tag
   - a `bootstrap.sh` that creates `~/home-server/telegram-mcp` and checks `.env`
-- A service in `docker-compose.yaml` with:
+- A service in `apps/compose.yaml` with:
   - `MCP_TRANSPORT=http` and a port bound to `127.0.0.1`
   - the session file persisted at `~/home-server/telegram-mcp`
 - `TELEGRAM_API_ID` and `TELEGRAM_API_HASH` added to `.env` and `.env.example`.

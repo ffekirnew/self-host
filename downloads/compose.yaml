@@ -1,0 +1,48 @@
+services:
+  gluetun:
+    build:
+      context: ./gluetun
+    container_name: gluetun
+    networks:
+      - default
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - TZ=Europe/London
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${NORDVPN_USER}
+      - OPENVPN_PASSWORD=${NORDVPN_PASSWORD}
+      - SERVER_COUNTRIES=United Kingdom
+      # the server list baked into the image goes stale (Nord rotates IPs); refresh it daily
+      - UPDATER_PERIOD=24h
+    volumes:
+      - ~/home-server/gluetun:/gluetun
+      - ./gluetun/auth/config.toml:/gluetun/auth/config.toml:ro
+    ports:
+      - 127.0.0.1:9090:9090 # qbittorrent Web UI
+    restart: unless-stopped
+  qbittorrent:
+    build:
+      context: ./qbittorrent
+    container_name: qbittorrent
+    # all traffic goes through the VPN; if gluetun is down, qbittorrent has no network
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
+    environment:
+      - TZ=Europe/London
+      - PUID=1000
+      - PGID=1000
+      - WEBUI_PORT=9090
+      - TORRENTING_PORT=6881
+    volumes:
+      - ~/home-server/.config/qbittorrent:/config
+      - ~/home-server/data:/data
+    restart: unless-stopped
+networks:
+  default:
+    external: true
+    name: proxy

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 # also covers tandoor-db's data dir
 mkdir -p ~/home-server/tandoor/{postgres,mediafiles}

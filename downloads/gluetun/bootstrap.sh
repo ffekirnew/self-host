@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # NordVPN service credentials (not your account login) are read from the repo-root .env by docker compose
-env_file="$(dirname "$0")/../.env"
+env_file="$(dirname "$0")/../../.env"
 [ -f "$env_file" ] || { echo "missing: .env (needs NORDVPN_USER, NORDVPN_PASSWORD)"; exit 1; }
 for var in NORDVPN_USER NORDVPN_PASSWORD; do
   grep -q "^$var=." "$env_file" || { echo "missing: $var in .env"; exit 1; }
