@@ -45,6 +45,45 @@ services:
       - tandoor-static:/opt/recipes/staticfiles
       - ~/home-server/tandoor/mediafiles:/opt/recipes/mediafiles
     restart: unless-stopped
+  adventurelog-db:
+    build:
+      context: ./adventurelog-db
+    container_name: adventurelog-db
+    networks:
+      - default
+    environment:
+      - POSTGRES_DB=adventurelog
+      - POSTGRES_USER=adventurelog
+      - POSTGRES_PASSWORD=${ADVENTURELOG_DB_PASSWORD}
+    volumes:
+      - ~/home-server/adventurelog/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+  adventurelog:
+    build:
+      context: ./adventurelog
+    container_name: adventurelog
+    networks:
+      - default
+    depends_on:
+      - adventurelog-db
+    environment:
+      # CSRF origins, frontend and public URLs are all derived from SITE_URL
+      - SITE_URL=https://adventures.ffserver.cc
+      # set explicitly: otherwise a new one is generated on every start, logging everyone out
+      - SECRET_KEY=${ADVENTURELOG_SECRET_KEY}
+      - PGHOST=adventurelog-db
+      - POSTGRES_DB=adventurelog
+      - POSTGRES_USER=adventurelog
+      - POSTGRES_PASSWORD=${ADVENTURELOG_DB_PASSWORD}
+      # superuser is created on first boot only; change the password in the app afterwards
+      - DJANGO_ADMIN_USERNAME=admin
+      - DJANGO_ADMIN_PASSWORD=${ADVENTURELOG_ADMIN_PASSWORD}
+      - DJANGO_ADMIN_EMAIL=admin@ffserver.cc
+      - DISABLE_REGISTRATION=True
+      - GUNICORN_WORKERS=2
+    volumes:
+      - ~/home-server/adventurelog/media:/code/media
+    restart: unless-stopped
 volumes:
   tandoor-static:
 networks:
