@@ -75,8 +75,10 @@ services:
       - POSTGRES_DB=adventurelog
       - POSTGRES_USER=adventurelog
       - POSTGRES_PASSWORD=${ADVENTURELOG_DB_PASSWORD}
-      # superuser is created on first boot only; change the password in the app afterwards
-      - DJANGO_ADMIN_USERNAME=admin
+      # superuser is created on first boot only; change the password in the app afterwards.
+      # The entrypoint looks the superuser up by username on every start and tries to create it
+      # if missing, so this must match the existing admin account or it crash-loops on the email.
+      - DJANGO_ADMIN_USERNAME=ffekirnew
       - DJANGO_ADMIN_PASSWORD=${ADVENTURELOG_ADMIN_PASSWORD}
       - DJANGO_ADMIN_EMAIL=admin@ffserver.cc
       - DISABLE_REGISTRATION=True
