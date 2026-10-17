@@ -87,6 +87,10 @@ pages:
                 icon: di:adventurelog
                 url: https://adventures.ffserver.cc
                 check-url: http://adventurelog:80/health
+              - title: Ghost
+                icon: di:ghost
+                url: https://blog.ffserver.cc
+                check-url: http://ghost:2368/ghost/api/admin/site/
           - type: monitor
             title: Media pipeline
             # local-only UIs: the links work on the server itself (or over `ssh -L`)
