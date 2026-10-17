@@ -84,11 +84,11 @@ pages:
                 url: https://recipes.ffserver.cc
                 check-url: http://tandoor:80
               - title: AdventureLog
-                icon: di:adventurelog
+                icon: di:adventure-log
                 url: https://adventures.ffserver.cc
                 check-url: http://adventurelog:80/health
               - title: Ghost
-                icon: di:ghost
+                icon: di:ghost.png
                 url: https://blog.ffserver.cc
                 check-url: http://ghost:2368/ghost/api/admin/site/
           - type: monitor
